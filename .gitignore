@@ -1,0 +1,6 @@
+/ipc/testnet/chain-index/*.db*
+/ipc/testnet/node.socket
+/ipc/testnet/node-db/
+/ipc/testnet/node-db/**
+/ipc/testnet/pab/*.db*
+/ipc/testnet/wallet/*.db*

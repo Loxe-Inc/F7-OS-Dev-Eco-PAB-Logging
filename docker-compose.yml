@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  chain-index:
+    build: plutus-apps
+    image: loxeinc/plutus-apps
+    volumes:
+      - ./ipc:/ipc
+    command:
+      - /nix/store/*nix-2.8.0/bin/nix-shell
+      - --run
+      - "cabal exec -- plutus-chain-index --config /ipc/testnet/chain-index/chain-index-config.json start-index"
+  pab:
+    build: plutus-apps
+    image: loxeinc/plutus-apps
+    environment:
+      - PAB_CONFIG=/ipc/testnet/pab/pab-config.yml
+      - PAB_PASSPHRASE=abc123456789
+      # PAB_PASSPHRASE must match wallet server restore passphrase for some system wallet (NOT recovery phrase) 
+      # -- You can pass this in other ways, env variables, etc.
+    volumes:
+      - ./ipc:/ipc
+      - ./plutus-apps/scripts:/scripts
+    command:
+      - bash
+      - /scripts/run-pab.sh
+        #  fluentd:
+        #    build: fluentd
+        #    image: loxeinc/fluentd
+        #    volumes:
+        #      - ./fluentd/conf:/fluentd/etc
+        #    links:
+        #      - "elasticsearch"
+  node:
+    image: loxeinc/cardano-node
+    volumes:
+      - ./ipc:/ipc
+  wallet:
+    image: loxeinc/cardano-wallet
+    # check default env variables in Dockerfile
+    volumes:
+      - ./ipc:/ipc
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.3
+    container_name: elasticsearch
+    environment:
+      - "discovery.type=single-node"
+    expose:
+      - "9200"
+    ports:
+      - "9200:9200"
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.3
+    links:
+      - "elasticsearch"
+    ports:
+      - "5601:5601"
