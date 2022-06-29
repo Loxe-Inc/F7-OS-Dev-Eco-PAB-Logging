@@ -28,7 +28,7 @@ Each line in our logs looks like:
 
 Aeson make a pretty ugly nested quoting structure so we use ruby in the fluentd filter pipeline to clean it up and process it as JSON. You can do a lot of cleaning and modification to suit your needs. We wanted, here, the PKHs of the parties in the mediation receiving funding back as well as the txHash and the case that was being cancelled. We log everything that has a transaction, because the PAB can't communicate back to tell us what transaction happened. We run our PAB with the following command to output the stdout and stderr log to a single file:
 ```
-nohup cabal run -- med-pab --config /ipc/testnet/pab/pab-config.yml webserver --passphrase abcdefghijklm > /ipc/testnet/pab/med-pab.out 2>&1 &
+nohup cabal run -- med-pab --config /ipc/testnet/pab/pab-config.yml webserver --passphrase abcdefghijklm > /ipc/testnet/pab/pab.out 2>&1 &
 ```
 So in your container for the PAB you might have this be your CMD
 
