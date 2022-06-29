@@ -6,8 +6,14 @@ Ideascale: https://cardano.ideascale.com/a/dtd/PAB-Container-Log-Processor/38445
 
 # PAB Container Log Processor
 
+## Background
+The PAB is a great utility for automating interactions with the blockchain based on HTTP requests. It provides a mechanism to run code on chain but also have that code available for off-chain calculation and determination if a transactions will succeed. It also allows for lookups on the blockchain to be done without transactions or without the use of a 3rd party service like blockfrost.
+
+
+## This repository
 This repository contains a docker-compose.yml file, a fluentd directory, and a few unnecesary but helpful other things to be explained in a moment.
 
+### Set up dependencies
 Before working in this repository is that you should have a running node,chain-index,wallet-server,and PAB. If you do not have any of these, we can help with the first 3.
 1. You can use our repo on docker hub for the node: 
   1. `loxeinc/node` this container is useful because it helps with running a system contained in a docker compose bundle. The user for this container is 1001:1002
@@ -16,6 +22,7 @@ Before working in this repository is that you should have a running node,chain-i
 3. You can use our repo on docker hub for plutus-apps:
   1. `loxeinc/plutus-apps` this container is useful because its user is set up with uid 1001 and gid 1002 like the other containers and makes for easy configuration with a docker compose script. Either mount your PAB into this container as a volume or rebuild with your PAB added.
 
+### Using PAB and Chain index
 For the chain-index and PAB, you will need the plutus-apps repository. There is a submodule here linking to that repo. Forking that repository and building your PAB in place of the sample Game etc. PAB is an option, but we assume you know how to build your own PAB with endpoints. In our PAB we construct logging that needs to be parsed with the logInfo function. However, according to the `fluentd/conf/fluent.conf` you must change:
 1. The tail source. You must point the path to the log to an existing and readable file, and the path to the position file to a writeable location.
 2. Each line in your log that you want to process should match the regexp. To these matching lines the named groups from the regexp will be tagged pab.loginfo and so subsequent matches or filters will have that pattern and those group matches.
